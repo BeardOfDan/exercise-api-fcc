@@ -10,7 +10,8 @@ module.exports = {
       'type': String,
       'required': true,
       'unique': true,
-      'maxlength': [maxLength, 'username is too long']
+      'maxlength': [maxLength, 'username is too long'],
+      'minlength': [1, 'username is too short']
     },
     '_id': {
       'type': String,
