@@ -32,12 +32,44 @@ module.exports = (app) => {
   });
 
   app.get('/api/exercise/users', async (req, res, next) => {
-    res.json(await User.find({}));
+    return res.json(await User.find({}));
   });
 
-  app.post('/api/exercise/add', (req, res, next) => {
+  app.post('/api/exercise/add', async (req, res, next) => {
+    const { _id, description, duration } = res.body;
+    let { date } = res.body;
 
-    res.json({ 'exercise': 'The exercise that was added' });
+    // date is optional, so handle creation, if needed
+    if (date === undefined) {
+      date = new Date.now();
+    } else if (typeof date !== 'number') {
+      return res.json({ 'error': 'date must be Unix time stamp' });
+    }
+
+    // validate user input
+    if (typeof _id !== 'string') {
+      return res.json({ 'error': '_id must be a string' });
+    } else if (typeof description !== 'string') {
+      return res.json({ 'error': 'description must be a string' });
+    } else if (typeof duration !== 'number') {
+      return res.json({ 'error': 'duration must be a number' });
+    }
+
+    // find user that corresponds to _id
+    const user = await User.findOne(_id);
+
+    if (user === null) {
+      return res.json({ 'error': `no user with an _id of ${_id} was found` });
+    }
+
+    // Add the exercise
+    const savedExercise = await new Exercise({
+      description, duration, date,
+      'username': user.username,
+      'userId': user._id
+    });
+
+    return res.json(savedExercise);
   });
 
   app.get('/api/exercise/log?{userId}[&from][&to][&limit]', (req, res, next) => {
