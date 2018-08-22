@@ -25,7 +25,7 @@ module.exports = {
     },
     'date': {
       'type': Date,
-      'default': new Date.now()
+      'default': Date.now()
     },
     'username': String,
     'userId': {
