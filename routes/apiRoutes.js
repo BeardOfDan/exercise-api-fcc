@@ -31,6 +31,10 @@ module.exports = (app) => {
     return res.json({ 'error': `A user with the username '${username}' already exists` })
   });
 
+  app.get('/api/exercise/users', async (req, res, next) => {
+    res.json(await User.find({}));
+  });
+
   app.post('/api/exercise/add', (req, res, next) => {
 
     res.json({ 'exercise': 'The exercise that was added' });
