@@ -54,6 +54,9 @@ module.exports = (app) => {
     // date is optional, so handle creation, if needed
     if (date === undefined) {
       date = Date.now();
+
+      console.log('\ndate: ' + date + '\n');
+
     } else if (typeof date !== 'number') {
       return res.json({ 'error': 'date must be Unix time stamp' });
     }
@@ -87,10 +90,8 @@ module.exports = (app) => {
     return res.json(savedExercise);
   });
 
-  // /:from:to/:limit
-  app.get('/api/exercise/log/:userId', async (req, res, next) => {
-    const { userId } = req.params;
-    const { from, to, limit } = req.query;
+  app.get('/api/exercise/log', async (req, res, next) => {
+    const { userId, from, to, limit } = req.query;
     const _id = userId;
 
     if (typeof _id !== 'string') {
@@ -106,8 +107,8 @@ module.exports = (app) => {
         log = await Exercise.find({ 'userId': _id }).sort({ 'date': -1 }).limit(limit);
       }
     } else { // apply date filter
-      const start = moment(from).unix();
-      const finish = moment(to).unix();
+      const start = moment(from).unix() * 1000; // multiply by 1000 to convert to miliseconds
+      const finish = moment(to).unix() * 1000;
 
       if (limit === undefined) {
         log = await Exercise.find({ 'userId': _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 });
