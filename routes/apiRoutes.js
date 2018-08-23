@@ -1,6 +1,8 @@
 
-const User = require('../models/user');
-const Exercise = require('../models/exercise');
+const mongoose = require('mongoose');
+
+const User = mongoose.model('User');
+const Exercise = mongoose.model('Exercise');
 
 const { maxLength } = require('../config/keys');
 

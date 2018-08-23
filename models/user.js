@@ -12,12 +12,12 @@ module.exports = {
       'unique': true,
       'maxlength': [maxLength, 'username is too long'],
       'minlength': [1, 'username is too short']
-    },
-    '_id': {
-      'type': String,
-      'index': true,
-      'unique': true,
-      'default': mongoose.Types.ObjectId
     }
+    // '_id': {
+    //   'type': String,
+    //   // 'index': true
+    //   'unique': true,
+    //   'default': mongoose.Types.ObjectId
+    // }
   }))
 };

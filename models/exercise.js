@@ -5,13 +5,13 @@ const Schema = mongoose.Schema;
 const { maxLength } = require('../config/keys');
 
 module.exports = {
-  'Exercise': new Schema({
-    '_id': {
-      'type': String,
-      'index': true,
-      'unique': true,
-      'default': mongoose.Types.ObjectId
-    },
+  'Exercise': mongoose.model('Exercise', new Schema({
+    // '_id': {
+    //   'type': String,
+    //   // 'index': true
+    //   'unique': true,
+    //   'default': mongoose.Types.ObjectId
+    // },
     'description': {
       'type': String,
       'required': true,
@@ -33,5 +33,5 @@ module.exports = {
       'ref': 'User',
       'index': true
     }
-  })
+  }))
 };
