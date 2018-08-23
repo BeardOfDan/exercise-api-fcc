@@ -5,5 +5,5 @@ if (process.env.NODE_ENV !== 'production') {
 
 module.exports = {
   'mongoURI': `mongodb://${process.env.DB_USER}:${process.env.DB_PASS}@${process.env.DB_HOST}`,
-  'maxLength': 12 // The max length for string input (to avoid 'magic numbers' in the models)
+  'maxLength': 20 // The max length for string input (to avoid 'magic numbers' in the models)
 };
