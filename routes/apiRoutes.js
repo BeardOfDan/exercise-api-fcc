@@ -51,7 +51,7 @@ module.exports = (app) => {
 
     // date is optional, so handle creation, if needed
     if (date === undefined) {
-      date = new Date.now();
+      date = Date.now();
     } else if (typeof date !== 'number') {
       return res.json({ 'error': 'date must be Unix time stamp' });
     }
@@ -66,7 +66,7 @@ module.exports = (app) => {
     }
 
     // find user that corresponds to _id
-    const user = await User.findOne(_id)
+    const user = await User.findOne({ _id })
       .catch(() => {
         return res.json({ 'error': 'could not search for the user' });
       });
@@ -80,7 +80,7 @@ module.exports = (app) => {
       description, duration, date,
       'username': user.username,
       'userId': user._id
-    });
+    }).save();
 
     return res.json(savedExercise);
   });

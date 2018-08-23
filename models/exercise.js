@@ -24,8 +24,7 @@ module.exports = {
       'min': [1, 'duration too short']
     },
     'date': {
-      'type': Date,
-      'default': Date.now()
+      'type': Date
     },
     'username': String,
     'userId': {
