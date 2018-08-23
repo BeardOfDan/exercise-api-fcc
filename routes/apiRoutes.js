@@ -20,7 +20,10 @@ module.exports = (app) => {
     const user = await User.findOne({ username });
 
     if (user === null) { // new user
-      const newUser = await new User({ username }).save();
+      const newUser = await new User({ username }).save()
+        .catch(() => {
+          return res.json({ 'error': 'could not save the new user' });
+        });
 
       return res.json({
         'username': newUser.username,
@@ -32,7 +35,10 @@ module.exports = (app) => {
   });
 
   app.get('/api/exercise/users', async (req, res, next) => {
-    return res.json(await User.find({}));
+    return res.json(await User.find({}))
+      .catch(() => {
+        return res.json({ 'error': 'could not find users' });
+      });
   });
 
   app.post('/api/exercise/add', async (req, res, next) => {
@@ -56,7 +62,10 @@ module.exports = (app) => {
     }
 
     // find user that corresponds to _id
-    const user = await User.findOne(_id);
+    const user = await User.findOne(_id)
+      .catch(() => {
+        return res.json({ 'error': 'could not search for the user' });
+      });
 
     if (user === null) {
       return res.json({ 'error': `no user with an _id of ${_id} was found` });
