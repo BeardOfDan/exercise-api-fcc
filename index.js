@@ -3,10 +3,10 @@ const app = express();
 
 app.use(express.json());
 
-const mongoose = require('mongoose');
-
 const PORT = process.env.PORT || 5000;
 const KEYS = require('./config/keys');
+
+const mongoose = require('mongoose');
 
 mongoose.connect(KEYS.mongoURI, { 'useNewUrlParser': true });
 
