@@ -15,7 +15,8 @@ require('./models/user');
 require('./models/exercise');
 
 app.get('/', (req, res, next) => {
-  res.send('Welcome to the Exercise Tracker API');
+  const style = '';
+  res.send(`<div style="text-align: center"><br><br><h3>Welcome to the Exercise Tracker API</h3><br><br><p>NOTE: The api paths are prefixed with \'<strong style="${style}">/api/exercise</strong>\', so to create a new user, POST to \'<strong style="${style}">/api/exercise/new-user</strong>\'</p></div>`);
 });
 
 require('./routes/apiRoutes')(app);
