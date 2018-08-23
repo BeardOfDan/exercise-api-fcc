@@ -1,5 +1,5 @@
 
-const User = require('../models/users');
+const User = require('../models/user');
 const Exercise = require('../models/exercise');
 
 const { maxLength } = require('../config/keys');
