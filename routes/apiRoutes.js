@@ -52,14 +52,8 @@ module.exports = (app) => {
     let { date } = req.body;
 
     // date is optional, so handle creation, if needed
-    if (date === undefined) {
-      date = Date.now();
-
-      console.log('\ndate: ' + date + '\n');
-
-    } else if (typeof date !== 'number') {
-      return res.json({ 'error': 'date must be Unix time stamp' });
-    }
+    // ensure date is stored as a unix timestamp (if it is supplied)
+    date = (date === undefined) ? Date.now() : (moment(date).unix() * 1000);
 
     // validate user input
     if (typeof _id !== 'string') {
@@ -98,25 +92,32 @@ module.exports = (app) => {
       return res.json({ 'error': 'need a string userId' });
     }
 
-    let log = []; // initializing here, to avoid scoping issue
+    const filter = {}; // for Exercise search
 
     if (from === undefined) { // no date filter
-      if (limit === undefined) {
-        log = await Exercise.find({ 'userId': _id }).sort({ 'date': -1 });
-      } else {
-        log = await Exercise.find({ 'userId': _id }).sort({ 'date': -1 }).limit(limit);
+      filter.userId = _id;
+    } else { // add date to filter
+      if ((typeof from !== 'string') || (typeof to !== 'string')) {
+        return res.json({ 'error': 'both \'from\' and \'to\' must be strings' });
       }
-    } else { // apply date filter
+
       const start = moment(from).unix() * 1000; // multiply by 1000 to convert to miliseconds
       const finish = moment(to).unix() * 1000;
 
-      if (limit === undefined) {
-        log = await Exercise.find({ 'userId': _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 });
-      } else {
-        log = await Exercise.find({ 'userId': _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 }).limit(limit);
-      }
+      filter.userId = _id;
+      filter.date = { '$gte': start, '$lte': finish };
     }
 
-    res.json({ log, 'count': log.length });
+    if (typeof limit === 'number') {
+      if (limit < 1) {
+        return res.json({ 'error': 'a limit of less than 1 is meaningless' });
+      }
+
+      const log = await Exercise.find(filter).sort({ 'date': -1 }).limit(limit);
+      return res.json({ log, 'count': log.length });
+    }
+
+    const log = await Exercise.find(filter).sort({ 'date': -1 });
+    return res.json({ log, 'count': log.length });
   });
 };
