@@ -35,14 +35,16 @@ module.exports = (app) => {
       });
     }
 
-    return res.json({ 'error': `A user with the username '${username}' already exists` })
+    return res.json({ 'error': `A user with the username '${username}' already exists` });
   });
 
   app.get('/api/exercise/users', async (req, res, next) => {
-    return res.json(await User.find({}))
-      .catch(() => {
-        return res.json({ 'error': 'could not find users' });
-      });
+    return res.json(
+      await User.find({})
+        .catch(() => {
+          return res.json({ 'error': 'could not find users' });
+        })
+    );
   });
 
   app.post('/api/exercise/add', async (req, res, next) => {
@@ -85,8 +87,10 @@ module.exports = (app) => {
     return res.json(savedExercise);
   });
 
-  app.get('/api/exercise/log?{userId}[&from][&to][&limit]', (req, res, next) => {
-    const { userId, from, to, limit } = req.params;
+  // /:from:to/:limit
+  app.get('/api/exercise/log/:userId', async (req, res, next) => {
+    const { userId } = req.params;
+    const { from, to, limit } = req.query;
     const _id = userId;
 
     if (typeof _id !== 'string') {
@@ -97,18 +101,18 @@ module.exports = (app) => {
 
     if (from === undefined) { // no date filter
       if (limit === undefined) {
-        log = Exercise.find({ _id }).sort({ 'date': -1 });
+        log = await Exercise.find({ 'userId': _id }).sort({ 'date': -1 });
       } else {
-        log = Exercise.find({ _id }).sort({ 'date': -1 }).limit(limit);
+        log = await Exercise.find({ 'userId': _id }).sort({ 'date': -1 }).limit(limit);
       }
     } else { // apply date filter
       const start = moment(from).unix();
       const finish = moment(to).unix();
 
       if (limit === undefined) {
-        log = Exercise.find({ _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 });
+        log = await Exercise.find({ 'userId': _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 });
       } else {
-        log = Exercise.find({ _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 }).limit(limit);
+        log = await Exercise.find({ 'userId': _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 }).limit(limit);
       }
     }
 

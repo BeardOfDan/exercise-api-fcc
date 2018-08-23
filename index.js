@@ -21,5 +21,5 @@ app.get('/', (req, res, next) => {
 require('./routes/apiRoutes')(app);
 
 app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
+  console.log(`\nListening on port ${PORT}\n`);
 });
