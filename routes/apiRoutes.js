@@ -4,6 +4,8 @@ const Exercise = require('../models/exercise');
 
 const { maxLength } = require('../config/keys');
 
+const moment = require('moment');
+
 module.exports = (app) => {
   app.post('/api/exercise/new-user', async (req, res, next) => {
     const { username } = res.body;
@@ -82,7 +84,32 @@ module.exports = (app) => {
   });
 
   app.get('/api/exercise/log?{userId}[&from][&to][&limit]', (req, res, next) => {
+    const { userId, from, to, limit } = res.params;
+    const _id = userId;
 
-    res.json({ 'exercise': 'Retrieved exercise' });
+    if (typeof _id !== 'string') {
+      return res.json({ 'error': 'need a string userId' });
+    }
+
+    let log = []; // initializing here, to avoid scoping issue
+
+    if (from === undefined) { // no date filter
+      if (limit === undefined) {
+        log = Exercise.find({ _id }).sort({ 'date': -1 });
+      } else {
+        log = Exercise.find({ _id }).sort({ 'date': -1 }).limit(limit);
+      }
+    } else { // apply date filter
+      const start = moment(from).unix();
+      const finish = moment(to).unix();
+
+      if (limit === undefined) {
+        log = Exercise.find({ _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 });
+      } else {
+        log = Exercise.find({ _id, date: { $gte: start, $lte: finish } }).sort({ 'date': -1 }).limit(limit);
+      }
+    }
+
+    res.json({ log, 'count': log.length });
   });
 };
