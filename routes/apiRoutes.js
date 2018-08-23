@@ -8,7 +8,7 @@ const moment = require('moment');
 
 module.exports = (app) => {
   app.post('/api/exercise/new-user', async (req, res, next) => {
-    const { username } = res.body;
+    const { username } = req.body;
 
     // validate user input
     if (typeof username !== 'string') {
@@ -44,8 +44,8 @@ module.exports = (app) => {
   });
 
   app.post('/api/exercise/add', async (req, res, next) => {
-    const { _id, description, duration } = res.body;
-    let { date } = res.body;
+    const { _id, description, duration } = req.body;
+    let { date } = req.body;
 
     // date is optional, so handle creation, if needed
     if (date === undefined) {
@@ -84,7 +84,7 @@ module.exports = (app) => {
   });
 
   app.get('/api/exercise/log?{userId}[&from][&to][&limit]', (req, res, next) => {
-    const { userId, from, to, limit } = res.params;
+    const { userId, from, to, limit } = req.params;
     const _id = userId;
 
     if (typeof _id !== 'string') {
