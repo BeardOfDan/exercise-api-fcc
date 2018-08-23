@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const PORT = process.env.PORT || 5000;
 const KEYS = require('./config/keys');
 
-mongoose.connect(KEYS.mongoURI);
+mongoose.connect(KEYS.mongoURI, { 'useNewUrlParser': true });
 
 // Run models code
 require('./models/user');
